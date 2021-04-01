@@ -29,14 +29,15 @@ import (
 
 // lessonsCmd represents the lessons command
 var lessonsCmd = &cobra.Command{
-	Use:   "lessons",
-	Short: "A brief description of your command",
+	Use:   "lessons [lessonID]",
+	Short: "Retrieve informations about University lessons",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
+	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("lessons called")
 	},
@@ -45,13 +46,8 @@ to quickly create a Cobra application.`,
 func init() {
 	rootCmd.AddCommand(lessonsCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// lessonsCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// lessonsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	lessonsCmd.Flags().BoolP("verbose", "v", false, "verbose output")
+	lessonsCmd.Flags().IntP("semester", "s", -1, "only retrieve lessons of the given semester")
+	lessonsCmd.Flags().Lookup("semester").DefValue = "all"
+	lessonsCmd.Flags().StringP("output", "o", "table", "output mode (table, yaml, json)")
 }
