@@ -22,9 +22,9 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"github.com/FotiadisM/ditctl/pkg/config"
 	"github.com/spf13/cobra"
 
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 )
 
@@ -33,13 +33,12 @@ var cfgFile string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "ditctl",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "WoW, such tool",
+	Long: `ditctl
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+ditctl is cli tool to fetch emails from webmail, informations about
+the Department of Informatics and Telecommunication lessons,
+calculate easily your gpa and missing ects and set reminders.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -51,28 +50,27 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.ditctl.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "ditconfig", "", "path to config file (default is $HOME/.ditctl/config)")
 }
 
-// initConfig reads in config file and ENV variables if set.
+// initConfig reads in config file
 func initConfig() {
+	viper.SetConfigName(config.ConfigName)
+	viper.SetConfigType(config.ConfigType)
+	viper.AddConfigPath(config.ConfigDirPath)
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		cobra.CheckErr(err)
-
-		// Search config in home directory with name ".ditctl" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".ditctl")
 	}
 
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	// if err := viper.ReadInConfig(); err == nil {
-	// fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	// }
+	// If a config file is not found, if the flag --config is not set, create it
+	// otherwise throw error.
+	if err := viper.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok && cfgFile == "" {
+			config.CreateEmpty(config.ConfigDirPath)
+		} else {
+			cobra.CheckErr(err)
+		}
+	}
 }

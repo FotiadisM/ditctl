@@ -23,55 +23,25 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-	"strconv"
-	"time"
 
-	"github.com/FotiadisM/ditctl/pkg/config"
-	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
-// listCmd represents the list command
-var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List all active reminders",
+// gpaCmd represents the gpa command
+var gpaCmd = &cobra.Command{
+	Use:   "gpa",
+	Short: "Calculate your gpa and missing ects",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Aliases: []string{"ls"},
-	Args:    cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		rs := config.GetReminders()
-
-		var data [][]string
-		for _, r := range rs {
-			t, err := time.Parse(time.RFC3339, r.Time)
-			if err != nil {
-				cobra.CheckErr(err)
-			}
-
-			data = append(data, []string{
-				strconv.Itoa(r.ID),
-				t.Format("02 January 2006"),
-				t.Format("15:04"),
-				r.Description,
-			})
-		}
-
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetHeader([]string{"ID", "Date", "Time", "Description"})
-		table.SetCenterSeparator("|")
-		table.AppendBulk(data)
-		fmt.Println()
-		table.Render()
-		fmt.Println()
+		fmt.Println("gpa called")
 	},
 }
 
 func init() {
-	remindersCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(gpaCmd)
 }

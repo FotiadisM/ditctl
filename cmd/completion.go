@@ -30,16 +30,49 @@ import (
 
 // completionCmd represents the completion command
 var completionCmd = &cobra.Command{
-	Use:   "completion {bash | zsh | powershell}",
+	Use:   "completion {bash | zsh | fish | powershell}",
 	Short: "Output shell completion code for the specified shell",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Long: `To load completions:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Bash:
+	
+	  $ source <(ditctl completion bash)
+	
+	  # To load completions for each session, execute once:
+	  # Linux:
+	  $ ditctl completion bash > /etc/bash_completion.d/ditctl
+	  # macOS:
+	  $ ditctl completion bash > /usr/local/etc/bash_completion.d/ditctl
+	
+	Zsh:
+	
+	  # If shell completion is not already enabled in your environment,
+	  # you will need to enable it.  You can execute the following once:
+	
+	  $ echo "autoload -U compinit; compinit" >> ~/.zshrc
+	
+	  # To load completions for each session, execute once:
+	  $ echo "source <(ditctl completion bash)" >> ~/.zshrc
+	
+	  # You will need to start a new shell for this setup to take effect.
+	
+	fish:
+	
+	  $ ditctl completion fish | source
+	
+	  # To load completions for each session, execute once:
+	  $ ditctl completion fish > ~/.config/fish/completions/ditctl.fish
+	
+	PowerShell:
+	
+	  PS> ditctl completion powershell | Out-String | Invoke-Expression
+	
+	  # To load completions for every new session, run:
+	  PS> ditctl completion powershell > ditctl.ps1
+	  # and source this file from your PowerShell profile.
+	`,
 	Args:      cobra.ExactArgs(1),
-	ValidArgs: []string{"bash", "zsh", "powershell"},
+	ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
 	Run: func(cmd *cobra.Command, args []string) {
 		switch args[0] {
 		case "bash":
@@ -47,6 +80,8 @@ to quickly create a Cobra application.`,
 		case "zsh":
 			rootCmd.GenZshCompletion(os.Stdout)
 			fmt.Println("compdef _ditctl ditctl")
+		case "fish":
+			cmd.Root().GenFishCompletion(os.Stdout, true)
 		case "powershell":
 			rootCmd.GenPowerShellCompletion(os.Stdout)
 		}
@@ -55,14 +90,4 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(completionCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// completionCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// completionCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -22,14 +22,14 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/FotiadisM/ditctl/pkg/config"
+	"github.com/FotiadisM/ditctl/pkg/reminder"
 	"github.com/spf13/cobra"
 )
 
 // newCmd represents the new command
 var newCmd = &cobra.Command{
-	Use:   "new date time description",
+	Use:   "new dd/mm/yy hh:mm description",
 	Short: "Adds a new reminder",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -37,23 +37,21 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Example: "ditctl reminders new 27/7 12:30 Εκξέταση ΕΑΜ",
+	Example: "ditctl reminders new 27/7/2021 12:30 Εκξέταση ΕΑΜ",
+	Args:    cobra.MinimumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("new called")
+		r, err := reminder.NewReminder(args[0], args[1], args[2:])
+		if err != nil {
+			cobra.CheckErr(err)
+		}
+
+		// fmt.Println(config.GetReminders())
+		if err := config.AddReminder(r); err != nil {
+			cobra.CheckErr(err)
+		}
 	},
-	Args: cobra.ExactArgs(3),
 }
 
 func init() {
 	remindersCmd.AddCommand(newCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// newCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// newCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
