@@ -71,3 +71,9 @@ func AddReminder(r reminder.Reminder) error {
 	viper.Set("state.reminders", rs)
 	return viper.WriteConfig()
 }
+
+func SetReminders(rs []reminder.Reminder) error {
+	viper.Set("state.reminders", rs)
+
+	return viper.WriteConfig()
+}

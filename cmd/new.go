@@ -45,7 +45,6 @@ to quickly create a Cobra application.`,
 			cobra.CheckErr(err)
 		}
 
-		// fmt.Println(config.GetReminders())
 		if err := config.AddReminder(r); err != nil {
 			cobra.CheckErr(err)
 		}

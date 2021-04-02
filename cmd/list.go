@@ -51,7 +51,7 @@ to quickly create a Cobra application.`,
 		for _, r := range rs {
 			t, err := time.Parse(time.RFC3339, r.Time)
 			if err != nil {
-				cobra.CheckErr(err)
+				cobra.CheckErr("config file is not valid")
 			}
 
 			data = append(data, []string{

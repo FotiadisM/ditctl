@@ -22,8 +22,9 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
+	"strconv"
 
+	"github.com/FotiadisM/ditctl/pkg/config"
 	"github.com/spf13/cobra"
 )
 
@@ -40,7 +41,20 @@ to quickly create a Cobra application.`,
 	Aliases: []string{"rm"},
 	Args:    cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("remove called")
+		rs := config.GetReminders()
+
+		for _, id := range args {
+			for i := range rs {
+				if strconv.Itoa(rs[i].ID) == id {
+					rs = append(rs[:i], rs[i+1:]...)
+					break
+				}
+			}
+		}
+
+		if err := config.SetReminders(rs); err != nil {
+			cobra.CheckErr(err)
+		}
 	},
 }
 
