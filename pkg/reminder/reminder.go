@@ -20,6 +20,8 @@ func NewReminder(givenDay string, givenTime string, givenDiscription []string) (
 		return r, err
 	}
 
+	// TODO add a more robust id generation technique that takes into
+	// account current ids.
 	r.ID = rand.New(rand.NewSource(time.Now().Unix())).Intn(1000)
 	r.Time = t.Format(time.RFC3339)
 	r.Description = strings.Join(givenDiscription, " ")

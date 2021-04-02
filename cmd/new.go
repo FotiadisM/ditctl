@@ -22,6 +22,8 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/FotiadisM/ditctl/pkg/config"
 	"github.com/FotiadisM/ditctl/pkg/reminder"
 	"github.com/spf13/cobra"
@@ -48,6 +50,8 @@ to quickly create a Cobra application.`,
 		if err := config.AddReminder(r); err != nil {
 			cobra.CheckErr(err)
 		}
+
+		fmt.Println("Added reminder", r.ID)
 	},
 }
 
