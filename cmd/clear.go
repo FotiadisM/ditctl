@@ -26,7 +26,6 @@ import (
 	"log"
 
 	"github.com/FotiadisM/ditctl/pkg/config"
-	"github.com/FotiadisM/ditctl/pkg/reminder"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
@@ -41,6 +40,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		prompt := promptui.Select{
 			Label: "Are you sure?[Yes/No]",
@@ -53,25 +53,14 @@ to quickly create a Cobra application.`,
 		}
 
 		if result == "Yes" {
-			if err := config.SetReminders([]reminder.Reminder{}); err != nil {
+			if err := config.SetReminders([]config.Reminder{}); err != nil {
 				cobra.CheckErr(err)
 			}
+			fmt.Println("All reminders have been cleared")
 		}
-
-		fmt.Println("All reminders have been cleared")
 	},
 }
 
 func init() {
 	remindersCmd.AddCommand(clearCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// clearCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// clearCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

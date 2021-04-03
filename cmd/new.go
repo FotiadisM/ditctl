@@ -25,7 +25,6 @@ import (
 	"fmt"
 
 	"github.com/FotiadisM/ditctl/pkg/config"
-	"github.com/FotiadisM/ditctl/pkg/reminder"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +41,7 @@ to quickly create a Cobra application.`,
 	Example: "ditctl reminders new 27/7/2021 12:30 Εκξέταση ΕΑΜ",
 	Args:    cobra.MinimumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
-		r, err := reminder.NewReminder(args[0], args[1], args[2:])
+		r, err := config.NewReminder(args[0], args[1], args[2:])
 		if err != nil {
 			cobra.CheckErr(err)
 		}

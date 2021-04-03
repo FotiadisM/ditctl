@@ -1,9 +1,11 @@
-package reminder
+package config
 
 import (
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 // Reminder defines the fields of a reminder
@@ -27,4 +29,23 @@ func NewReminder(givenDay string, givenTime string, givenDiscription []string) (
 	r.Description = strings.Join(givenDiscription, " ")
 
 	return r, err
+}
+
+func GetReminders() (rs []Reminder) {
+	viper.UnmarshalKey("state.reminders", &rs)
+	return rs
+}
+
+func AddReminder(r Reminder) error {
+	var rs []Reminder
+	viper.UnmarshalKey("state.reminders", &rs)
+	rs = append(rs, r)
+	viper.Set("state.reminders", rs)
+	return viper.WriteConfig()
+}
+
+func SetReminders(rs []Reminder) error {
+	viper.Set("state.reminders", rs)
+
+	return viper.WriteConfig()
 }

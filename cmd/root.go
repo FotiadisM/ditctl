@@ -38,7 +38,7 @@ var rootCmd = &cobra.Command{
 
 ditctl is cli tool to fetch emails from webmail, informations about
 the Department of Informatics and Telecommunication lessons,
-calculate easily your gpa and missing ects and set reminders.`,
+calculate easily your gpa, needed ects to graduate and set reminders.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
