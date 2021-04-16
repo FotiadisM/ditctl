@@ -24,8 +24,9 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/FotiadisM/ditctl/pkg/config"
 	"github.com/spf13/cobra"
+
+	"github.com/FotiadisM/ditctl/pkg/config"
 )
 
 // newCmd represents the new command
@@ -38,7 +39,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Example: "ditctl reminders new 27/7/2021 12:30 Εκξέταση ΕΑΜ",
+	Example: "ditctl reminders new 27/7/2021 12:30 Εξέταση ΕΑΜ",
 	Args:    cobra.MinimumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 		r, err := config.NewReminder(args[0], args[1], args[2:])

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -14,6 +15,9 @@ const (
 	ConfigName = "config"
 	// ConfigType containes the type of the configuration file
 	ConfigType = "yaml"
+	// ConfigFolder containes the name of the folder that the
+	// config file is located
+	ConfigFolder = ".ditctl"
 )
 
 var (
@@ -26,31 +30,36 @@ func init() {
 	if err != nil {
 		cobra.CheckErr(err)
 	}
-	ConfigDirPath = home + "/.ditctl/"
+	ConfigDirPath = filepath.Join(home, ConfigFolder)
 
 	viper.SetDefault("credential.username", "")
 	viper.SetDefault("credential.password", "")
 	viper.SetDefault("context", "")
 	viper.SetDefault("state.reminders", []Reminder{})
+	viper.SetDefault("state.semesters", []Semester{})
 }
 
-func CreateEmpty(path string) {
-	if err := os.MkdirAll(filepath.Dir(path), 0770); err != nil {
-		cobra.CheckErr(err)
+func CreateEmpty(path string) (err error) {
+	if err = os.MkdirAll(filepath.Dir(path), 0770); err != nil {
+		return
 	}
 
-	f, err := os.Create(path + ConfigName)
+	f, err := os.Create(path)
 	if err != nil {
-		cobra.CheckErr(err)
+		return err
 	}
 	defer f.Close()
 
 	// change file permissions for security
-	if err := f.Chmod(0600); err != nil {
-		cobra.CheckErr(err)
+	if err = f.Chmod(0600); err != nil {
+		fmt.Println("3")
+		return
 	}
 
-	if err := viper.WriteConfig(); err != nil {
-		cobra.CheckErr(err)
+	// create an empty defailt config
+	if err = viper.WriteConfig(); err != nil {
+		return
 	}
+
+	return
 }

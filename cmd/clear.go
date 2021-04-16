@@ -25,9 +25,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/FotiadisM/ditctl/pkg/config"
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
+
+	"github.com/FotiadisM/ditctl/pkg/config"
 )
 
 // clearCmd represents the clear command

@@ -22,10 +22,13 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"github.com/FotiadisM/ditctl/pkg/config"
-	"github.com/spf13/cobra"
+	"path"
+	"path/filepath"
 
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/FotiadisM/ditctl/pkg/config"
 )
 
 var cfgFile string
@@ -50,10 +53,12 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "ditconfig", "", "path to config file (default is $HOME/.ditctl/config)")
+	defaultLocation := filepath.Join(config.ConfigDirPath, config.ConfigName)
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "ditconfig", "", "path to config file (default is "+defaultLocation+")")
 }
 
-// initConfig reads in config file
+// initConfig reads the config file if exists, otherwise creates an empty one in
+// the default location
 func initConfig() {
 	viper.SetConfigName(config.ConfigName)
 	viper.SetConfigType(config.ConfigType)
@@ -64,11 +69,13 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	}
 
-	// If a config file is not found, if the flag --config is not set, create it
+	// If a config file is not found and flag --config is not set, create it
 	// otherwise throw error.
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok && cfgFile == "" {
-			config.CreateEmpty(config.ConfigDirPath)
+			if err := config.CreateEmpty(path.Join(config.ConfigDirPath, config.ConfigName)); err != nil {
+				cobra.CheckErr(err)
+			}
 		} else {
 			cobra.CheckErr(err)
 		}

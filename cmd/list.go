@@ -27,9 +27,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/FotiadisM/ditctl/pkg/config"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+
+	"github.com/FotiadisM/ditctl/pkg/config"
 )
 
 // listCmd represents the list command

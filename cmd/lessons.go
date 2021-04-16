@@ -22,9 +22,13 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
+	"os"
 
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+
+	"github.com/FotiadisM/ditctl/pkg/config"
+	"github.com/FotiadisM/ditctl/pkg/parser"
 )
 
 // lessonsCmd represents the lessons command
@@ -39,7 +43,18 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Args: cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("lessons called")
+		var sems []config.Semester
+		sems = config.GetSemesters()
+
+		if len(sems) == 0 {
+			var err error
+			sems, err = refreshCache()
+			if err != nil {
+				cobra.CheckErr(err)
+			}
+		}
+
+		printNormal(sems)
 	},
 }
 
@@ -47,7 +62,39 @@ func init() {
 	rootCmd.AddCommand(lessonsCmd)
 
 	lessonsCmd.Flags().BoolP("verbose", "v", false, "verbose output")
+	lessonsCmd.Flags().BoolP("refresh", "r", false, "fetch lesson from the internet and update the cache")
 	lessonsCmd.Flags().IntP("semester", "s", -1, "only retrieve lessons of the given semester")
 	lessonsCmd.Flags().Lookup("semester").DefValue = "all"
 	lessonsCmd.Flags().StringP("output", "o", "table", "output mode (table, yaml, json)")
+}
+
+func refreshCache() (sems []config.Semester, err error) {
+	sems, err = parser.FetchLessons()
+	if err != nil {
+		return
+	}
+
+	if err = config.SetSemesters(sems); err != nil {
+		return
+	}
+
+	return
+}
+
+func printNormal(sems []config.Semester) {
+	table := tablewriter.NewWriter(os.Stdout)
+
+	table.Render()
+}
+
+func printVerbose(sems []config.Semester) {
+
+}
+
+func printYAML(sems []config.Semester) {
+
+}
+
+func printJSON(sems []config.Semester) {
+
 }

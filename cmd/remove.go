@@ -24,8 +24,9 @@ package cmd
 import (
 	"strconv"
 
-	"github.com/FotiadisM/ditctl/pkg/config"
 	"github.com/spf13/cobra"
+
+	"github.com/FotiadisM/ditctl/pkg/config"
 )
 
 // removeCmd represents the remove command
