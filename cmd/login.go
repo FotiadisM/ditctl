@@ -22,8 +22,10 @@ THE SOFTWARE.
 package cmd
 
 import (
-	"fmt"
+	"encoding/base64"
 
+	"github.com/FotiadisM/ditctl/pkg/config"
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -37,8 +39,33 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
+	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("login called")
+		c := config.Credentials{}
+
+		p := promptui.Prompt{
+			Label: "Username",
+		}
+		username, err := p.Run()
+		if err != nil {
+			cobra.CheckErr(err)
+		}
+
+		p = promptui.Prompt{
+			Label: "Password",
+			Mask:  '*',
+		}
+		password, err := p.Run()
+		if err != nil {
+			cobra.CheckErr(err)
+		}
+
+		c.Username = base64.StdEncoding.EncodeToString([]byte(username))
+		c.Password = base64.StdEncoding.EncodeToString([]byte(password))
+
+		if err = config.SetCredentials(c); err != nil {
+			cobra.CheckErr(err)
+		}
 	},
 }
 

@@ -32,8 +32,8 @@ func init() {
 	}
 	ConfigDirPath = filepath.Join(home, ConfigFolder)
 
-	viper.SetDefault("credential.username", "")
-	viper.SetDefault("credential.password", "")
+	viper.SetDefault("credentials.username", "")
+	viper.SetDefault("credentials.password", "")
 	viper.SetDefault("context", "")
 	viper.SetDefault("state.reminders", []Reminder{})
 	viper.SetDefault("state.semesters", []Semester{})

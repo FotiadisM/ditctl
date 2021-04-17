@@ -22,6 +22,7 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -42,7 +43,7 @@ var (
 
 // lessonsCmd represents the lessons command
 var lessonsCmd = &cobra.Command{
-	Use:   "lessons [lessonID]",
+	Use:   "lessons",
 	Short: "Retrieve informations about University lessons",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -50,7 +51,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Args: cobra.MaximumNArgs(1),
+	Args: cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
 		var sems []config.Semester
 		sems = config.GetSemesters()
@@ -61,6 +62,13 @@ to quickly create a Cobra application.`,
 			if err != nil {
 				cobra.CheckErr(err)
 			}
+		}
+
+		if semester != -1 {
+			if semester < 1 || semester > 8 {
+				cobra.CheckErr(errors.New("ditctl lessons --semester (-s) value must be between 1 and 8"))
+			}
+			sems = []config.Semester{sems[semester-1]}
 		}
 
 		switch output {
@@ -102,9 +110,9 @@ func refreshCache() (sems []config.Semester, err error) {
 
 func printNormal(sems []config.Semester) {
 	var data [][]string
-	for i, s := range sems {
+	for _, s := range sems {
 		for _, l := range s.Lessons {
-			data = append(data, []string{strconv.Itoa(i+1) + "o", l.Name, l.Code, l.Ects})
+			data = append(data, []string{strconv.Itoa(s.Number) + "o", l.Name, l.Code, l.Ects})
 		}
 	}
 
@@ -121,9 +129,9 @@ func printNormal(sems []config.Semester) {
 
 func printVerbose(sems []config.Semester) {
 	var data [][]string
-	for i, s := range sems {
+	for _, s := range sems {
 		for _, l := range s.Lessons {
-			data = append(data, []string{strconv.Itoa(i+1) + "o", l.Name, l.Code, l.Ects, l.Necessity, l.S1, l.S2, l.S3, l.S4, l.S5, l.S6})
+			data = append(data, []string{strconv.Itoa(s.Number) + "o", l.Name, l.Code, l.Ects, l.Necessity, l.S1, l.S2, l.S3, l.S4, l.S5, l.S6})
 		}
 	}
 

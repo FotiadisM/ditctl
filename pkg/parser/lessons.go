@@ -26,7 +26,7 @@ func FetchLessons() (sems []config.Semester, err error) {
 	}
 
 	doc.Find(".view-content .table-striped").Each(func(i int, s *goquery.Selection) {
-		sems = append(sems, parseSem(i, s))
+		sems = append(sems, parseSem(i+1, s))
 	})
 
 	return
